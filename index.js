@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.port || 5000;
 
@@ -29,7 +29,7 @@ async function run() {
 
     const servicesCollection = client.db("careerMaker").collection("services");
 
-    // inset services
+    // insert services
     app.post('/services', async(req, res)=>{
       const newServices = req.body;
       console.log(newServices);
@@ -37,11 +37,22 @@ async function run() {
       res.send(result);
     })
 
-    
+    // read services
+    app.get('/services', async(req, res)=>{
+      const cursor = servicesCollection.find();
+      const result = await cursor.toArray();
+      res.send(result)
+    })
 
+    // update services
+    app.get('/services/:id', async(req, res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const result = await servicesCollection.findOne(query);
+      res.send(result);
+    })
 
-
-
+   
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
