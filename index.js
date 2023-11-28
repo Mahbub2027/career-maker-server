@@ -61,8 +61,13 @@ async function run() {
       const result = await bookingCollection.insertOne(newBookings);
       res.send(result);
     })
-
     
+    // read bookings
+    app.get('/bookings', async(req, res)=>{
+      const cursor = bookingCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    })
    
 
     // Send a ping to confirm a successful connection
