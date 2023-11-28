@@ -28,6 +28,7 @@ async function run() {
     await client.connect();
 
     const servicesCollection = client.db("careerMaker").collection("services");
+    const bookingCollection = client.db("careerMaker").collection("bookings");
 
     // insert services
     app.post('/services', async(req, res)=>{
@@ -52,6 +53,16 @@ async function run() {
       res.send(result);
     })
 
+    // Booking services
+    // insert bookings
+    app.post('/bookings', async(req, res)=>{
+      const newBookings = req.body;
+      console.log(newBookings);
+      const result = await bookingCollection.insertOne(newBookings);
+      res.send(result);
+    })
+
+    
    
 
     // Send a ping to confirm a successful connection
