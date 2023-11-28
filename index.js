@@ -40,7 +40,12 @@ async function run() {
 
     // read services
     app.get('/services', async(req, res)=>{
-      const cursor = servicesCollection.find();
+      console.log(req.query.email)
+      let query = {};
+      if(req.query?.email){
+        query = {email: req.query.email}
+      }
+      const cursor = servicesCollection.find(query);
       const result = await cursor.toArray();
       res.send(result)
     })
@@ -50,6 +55,27 @@ async function run() {
       const id = req.params.id;
       const query = {_id: new ObjectId(id)}
       const result = await servicesCollection.findOne(query);
+      res.send(result);
+    })
+    app.put('/services/:id', async(req, res)=>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)}
+      const options = { upsert : true }
+      const updateServices = req.body;
+      const services = {
+        $set : {
+          name: updateServices.name,
+          providerName: updateServices.providerName,
+          email: updateServices.email,
+          area: updateServices.area,
+          providerPhoto: updateServices.providerPhoto,
+          description: updateServices.description,
+          price: updateServices.price,
+          photo: updateServices.photo
+           
+        }
+      }
+      const result = await servicesCollection.updateOne(filter, services, options);
       res.send(result);
     })
 
